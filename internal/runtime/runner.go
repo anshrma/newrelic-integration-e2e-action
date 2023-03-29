@@ -147,6 +147,13 @@ func (r *Runner) executeTests(tests spec.Tests, customTestKey string, scenarioTa
 	return nil
 }
 
+func isEnvExist(key string) bool {
+	if _, ok := os.LookupEnv(key); ok {
+		return true
+	}
+	return false
+}
+
 func (r *Runner) generateScenarioTag() string {
 	b := make([]rune, scenarioTagRuneNr)
 	for i := range b {
@@ -156,6 +163,10 @@ func (r *Runner) generateScenarioTag() string {
 	// This unless we are running tests locally should always be true
 	if len(r.commitSha) < 7 {
 		r.commitSha = r.commitSha + "0000000"
+	}
+
+	if isEnvExist("TEST_KEY") {
+		return os.Getenv("TEST_KEY")
 	}
 
 	//retrieving the short-sha of the commit
